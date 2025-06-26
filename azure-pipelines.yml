@@ -22,9 +22,9 @@ stages:
     - task: Docker@2
       displayName: 'Build & Push Training Image to ACR'
       inputs:
-        containerRegistry: 'ACR-Service-Connection'  # 🔁 Replace with your actual ACR service connection
-        repository: '$(trainingImageName)'
+        containerRegistry: 'acr-connection'  # 🔁 Replace with your actual ACR service connection
+        repository: '$(training-img)'
         command: 'buildAndPush'
         Dockerfile: 'training/Dockerfile'
         tags: |
-          $(tag)
+          $(0.1)
