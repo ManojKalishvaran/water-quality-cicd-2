@@ -41,7 +41,7 @@ stages:
         containerRegistry: 'acr-connection'  # 🔁 Replace with your actual ACR service connection
         repository: '$(inferenceImageName)'
         command: 'buildAndPush'
-        Dockerfile: '../inference/Dockerfile'
+        Dockerfile: '**/inference/Dockerfile'
         tags: |
           $(tag)
 
