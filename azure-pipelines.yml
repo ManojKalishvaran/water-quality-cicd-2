@@ -13,32 +13,31 @@ variables:
 
 stages:
 - stage: Build
-  displayName: '🔧 Build & Push Docker Images'
+  displayName: 'Build & Push Docker Images'
   jobs:
   - job: BuildTrainingImage
-    displayName: 'Build Training Docker Image'
+    displayName: 'Training Docker Image - Building'
     steps:
     - checkout: self
     - task: Docker@2
       displayName: 'Build & Push Training Image to ACR'
       inputs:
-        containerRegistry: 'acr-connection'  # 🔁 Replace with your actual ACR service connection
+        containerRegistry: 'acr-connection' 
         repository: '$(trainingImageName)'
         command: 'buildAndPush'
         Dockerfile: '**/Training/Dockerfile'
         tags: |
           $(tag)
 
-
-
   - job: BuildInferenceImage
-    displayName: 'Build Inference Docker Image'
+    displayName: 'Inference Docker Image - Building'
+    dependsOn: BuildTrainingImage
     steps:
     - checkout: self
     - task: Docker@2
       displayName: 'Build & Push Inference Image to ACR'
       inputs:
-        containerRegistry: 'acr-connection'  # 🔁 Replace with your actual ACR service connection
+        containerRegistry: 'acr-connection'  
         repository: '$(inferenceImageName)'
         command: 'buildAndPush'
         Dockerfile: '**/inference/Dockerfile'
@@ -46,7 +45,7 @@ stages:
           $(tag)
 
 - stage: Deploy
-  displayName: '🚀 Deploy Inference Container to Azure App Service'
+  displayName: 'Deploy Inference Container to Azure App Service'
   dependsOn: Build
   condition: succeeded()
   jobs:
@@ -56,6 +55,6 @@ stages:
     - task: AzureWebAppContainer@1
       displayName: 'Deploy Inference Container to App Service'
       inputs:
-        azureSubscription: 'az-sub'   # 🔁 Replace with your Azure subscription connection
-        appName: 'water-quality-api'            # 🔁 Replace with your App Service name
-        containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'  # 🔁 Replace with your ACR URL
+        azureSubscription: 'az-sub'   
+        appName: 'water-quality-api'        
+        containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'  
