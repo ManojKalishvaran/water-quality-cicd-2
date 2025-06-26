@@ -1,3 +1,5 @@
+name: water-quality-cicd-$(Date:yyyyMMdd)$(Rev:.r)
+
 trigger:
   branches:
     include:
