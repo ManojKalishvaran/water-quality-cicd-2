@@ -4,6 +4,11 @@ trigger:
   branches:
     include:
       - main
+  paths:
+    include:
+      - Training/**
+      - inference/**
+      - README.md
 
 pool:
   vmImage: 'ubuntu-latest'
