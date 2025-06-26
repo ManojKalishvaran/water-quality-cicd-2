@@ -28,3 +28,34 @@ stages:
         Dockerfile: '**/Training/Dockerfile'
         tags: |
           $(tag)
+
+
+
+  - job: BuildInferenceImage
+    displayName: 'Build Inference Docker Image'
+    steps:
+    - checkout: self
+    - task: Docker@2
+      displayName: 'Build & Push Inference Image to ACR'
+      inputs:
+        containerRegistry: 'acr-connection'  # 🔁 Replace with your actual ACR service connection
+        repository: '$(inferenceImageName)'
+        command: 'buildAndPush'
+        Dockerfile: '../inference/Dockerfile'
+        tags: |
+          $(tag)
+
+- stage: Deploy
+  displayName: '🚀 Deploy Inference Container to Azure App Service'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: DeployInference
+    displayName: 'Deploy Inference Container'
+    steps:
+    - task: AzureWebAppContainer@1
+      displayName: 'Deploy Inference Container to App Service'
+      inputs:
+        azureSubscription: 'az-sub'   # 🔁 Replace with your Azure subscription connection
+        appName: 'water-quality-api'            # 🔁 Replace with your App Service name
+        containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'  # 🔁 Replace with your ACR URL
