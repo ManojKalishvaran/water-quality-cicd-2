@@ -9,7 +9,7 @@ trigger:
       - Training/**
       - inference/**
       - README.md
-      - azure-pipeline.yml
+      - azure-pipelines.yml
 
 pool:
   vmImage: 'ubuntu-latest'
