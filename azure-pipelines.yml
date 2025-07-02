@@ -26,13 +26,14 @@ stages:
   displayName: 'Build & Push Docker Images'
   jobs:
 
+  # ------------------------------------------------------------------------------
+  # Job 1: Build and push training image, then run the container
+  # ------------------------------------------------------------------------------
   - job: LoginAndBuild
     displayName: 'Key Vault Login + Build Images'
     steps:
 
-    # -------------------------------------------------
-    # Step 1: Pull secrets from Azure Key Vault
-    # -------------------------------------------------
+    # Step 1: Get secrets from Key Vault
     - task: AzureKeyVault@2
       name: FetchSecrets
       inputs:
@@ -41,14 +42,10 @@ stages:
         SecretsFilter: '*'
         RunAsPreJob: true
 
-    # -------------------------------------------------
-    # Step 2: Checkout the source code
-    # -------------------------------------------------
+    # Step 2: Checkout
     - checkout: self
 
-    # -------------------------------------------------
-    # Step 3: Build & Push Training Docker Image
-    # -------------------------------------------------
+    # Step 3: Build and push training image
     - task: Docker@2
       displayName: 'Build & Push Training Image to ACR'
       inputs:
@@ -59,30 +56,31 @@ stages:
         tags: |
           $(tag)
 
-    # -------------------------------------------------
-    # Step 4: Pull & Run Training Container (using ACR credentials)
-    # -------------------------------------------------
+    # Step 4: Pull training image from ACR
     - task: Docker@2
       displayName: 'Pull Training Image from ACR'
       inputs:
         containerRegistry: 'acr-connection'
+        repository: '$(trainingImageName)'
         command: 'pull'
-        imageName: '$(trainingImageName):$(tag)'
+        tags: |
+          $(tag)
 
+    # Step 5: Run the training container
     - script: |
         echo "Running training container..."
-        docker run \
-          manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
+        docker run manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
       displayName: 'Run Training Container'
 
-  # -------------------------------------------------
-  # Step 5: Build Inference Docker Image
-  # -------------------------------------------------
+  # ------------------------------------------------------------------------------
+  # Job 2: Build and push inference image
+  # ------------------------------------------------------------------------------
   - job: BuildInferenceImage
     displayName: 'Build Inference Docker Image'
     dependsOn: LoginAndBuild
     steps:
     - checkout: self
+
     - task: Docker@2
       displayName: 'Build & Push Inference Image to ACR'
       inputs:
