@@ -8,19 +8,19 @@ import io
 
 
 def load():
-    # keyvault_name = "manoj-key-water"
-    # secret_name = "model-blob"
+    keyvault_name = "manoj-key-water"
+    secret_name = "model-blob"
 
-    # KVUri = f"https://{keyvault_name}.vault.azure.net"
+    KVUri = f"https://{keyvault_name}.vault.azure.net"
     credential = DefaultAzureCredential()
-    # secret_client = SecretClient(vault_url=KVUri, credential=credential)
+    secret_client = SecretClient(vault_url=KVUri, credential=credential)
 
-    # sas_token = secret_client.get_secret(secret_name).value
+    sas_token = secret_client.get_secret(secret_name).value
     storage_account = "manojblob1"
     container_name = "trained-models"
 
     account_url = f"https://{storage_account}.blob.core.windows.net"
-    blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
+    blob_service_client = BlobServiceClient(account_url=account_url, credential=sas_token)
     container_client = blob_service_client.get_container_client(container_name)
 
     # Step 1: List all blobs in the container with timestamps
@@ -42,22 +42,22 @@ def load():
 
 def load_blob_client():
     feature = ["timestamp", "ph","Hardness","Solids","Chloramines","Sulfate","Conductivity","Organic_carbon","Trihalomethanes","Turbidity", "prediction"]
-    # keyvault_name = "manoj-key-water"
-    # secret_name = "logs"  
+    keyvault_name = "manoj-key-water"
+    secret_name = "logs"  
 
-    # KVUri = f"https://{keyvault_name}.vault.azure.net"
+    KVUri = f"https://{keyvault_name}.vault.azure.net"
 
     credential = DefaultAzureCredential()
-    # secret_client = SecretClient(vault_url=KVUri, credential=credential)
+    secret_client = SecretClient(vault_url=KVUri, credential=credential)
 
-    # sas_token = secret_client.get_secret(secret_name).value
+    sas_token = secret_client.get_secret(secret_name).value
 
     storage_account_name = "manojblob1"
     container_name = "data-log-test"
 
     account_url = f"https://{storage_account_name}.blob.core.windows.net"
 
-    blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
+    blob_service_client = BlobServiceClient(account_url=account_url, credential=sas_token)
 
     container_client = blob_service_client.get_container_client(container_name)
     blob_name = "logs.csv"
