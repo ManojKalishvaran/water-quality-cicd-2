@@ -41,6 +41,7 @@ stages:
 
     ## ✅ Step 2: Checkout code
     - checkout: self
+      dependsOn: FetchSecrets
 
     ## ✅ Step 3: Build & Push Training Docker Image
     - task: Docker@2
@@ -58,7 +59,7 @@ stages:
         echo "Pulling training image from ACR..."
         docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
 
-        echo "Running training container with Azure credentials...using $(SPclientID)"
+        echo "Running training container with Azure credentials...using $(SPclientID1)"
         docker run \
           -e AZURE_CLIENT_ID="$(SPclientID1)" \
           -e AZURE_CLIENT_SECRET="$(SPclientSecret1)" \
