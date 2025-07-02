@@ -51,20 +51,20 @@ stages:
           $(tag)
 
     ## ✅ Step 4: Run Training Container with Azure Auth
-        - script: |
-        echo "Login to ACR..."
-        az acr login --name manojacrregistry
-        
-        echo "Pulling training image from ACR..."
-        docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
-
-        echo "Running training container with Azure credentials..."
-        docker run \
-        #   -e AZURE_CLIENT_ID=$(SPclientID) \
-        #   -e AZURE_CLIENT_SECRET=$(SPclientSecret) \
-        #   -e AZURE_TENANT_ID=$(SPtenentID) \
-          manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
-      displayName: "Run Training Container"
+      - script: |
+          echo "Login to ACR..."
+          az acr login --name manojacrregistry
+          
+          echo "Pulling training image from ACR..."
+          docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
+  
+          echo "Running training container with Azure credentials..."
+          docker run \
+          #   -e AZURE_CLIENT_ID=$(SPclientID) \
+          #   -e AZURE_CLIENT_SECRET=$(SPclientSecret) \
+          #   -e AZURE_TENANT_ID=$(SPtenentID) \
+            manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
+        displayName: "Run Training Container"
 
   - job: BuildInferenceImage
     displayName: 'Build Inference Docker Image'
