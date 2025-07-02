@@ -42,29 +42,29 @@ stages:
     ## ✅ Step 2: Checkout code
     - checkout: self
 
-    ## ✅ Step 3: Build & Push Training Docker Image
-    - task: Docker@2
-      displayName: 'Build & Push Training Image to ACR'
-      inputs:
-        containerRegistry: 'acr-connection' 
-        repository: '$(trainingImageName)'
-        command: 'buildAndPush'
-        Dockerfile: '**/Training/Dockerfile'
-        tags: |
-          $(tag)
+    # ## ✅ Step 3: Build & Push Training Docker Image
+    # - task: Docker@2
+    #   displayName: 'Build & Push Training Image to ACR'
+    #   inputs:
+    #     containerRegistry: 'acr-connection' 
+    #     repository: '$(trainingImageName)'
+    #     command: 'buildAndPush'
+    #     Dockerfile: '**/Training/Dockerfile'
+    #     tags: |
+    #       $(tag)
 
-    ## ✅ Step 4: Run Training Container with Azure Auth
-    - script: |
-        echo "Pulling training image from ACR..."
-        docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
+    # ## ✅ Step 4: Run Training Container with Azure Auth
+    # - script: |
+    #     echo "Pulling training image from ACR..."
+    #     docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
 
-        echo "Running training container with Azure credentials...using $(SPclientID1)"
-        docker run \
-          -e AZURE_CLIENT_ID="$(SPclientID1)" \
-          -e AZURE_CLIENT_SECRET="$(SPclientSecret1)" \
-          -e AZURE_TENANT_ID="$(SPtenentID1)" \
-          manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
-      displayName: "Run Training Container"
+    #     echo "Running training container with Azure credentials...using $(SPclientID1)"
+    #     docker run \
+    #       -e AZURE_CLIENT_ID="$(SPclientID1)" \
+    #       -e AZURE_CLIENT_SECRET="$(SPclientSecret1)" \
+    #       -e AZURE_TENANT_ID="$(SPtenentID1)" \
+    #       manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
+    #   displayName: "Run Training Container"
 
   - job: BuildInferenceImage
     displayName: 'Build Inference Docker Image'
