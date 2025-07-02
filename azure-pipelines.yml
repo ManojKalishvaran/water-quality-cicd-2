@@ -51,7 +51,10 @@ stages:
           $(tag)
 
     ## ✅ Step 4: Run Training Container with Azure Auth
-    - script: |
+        - script: |
+        echo "Login to ACR..."
+        az acr login --name manojacrregistry
+        
         echo "Pulling training image from ACR..."
         docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
 
