@@ -58,7 +58,7 @@ stages:
         echo "Pulling training image from ACR..."
         docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
 
-        echo "Running training container with Azure credentials..."
+        echo "Running training container with Azure credentials...using $(SPclientID)"
         docker run \
           -e AZURE_CLIENT_ID=$(SPclientID) \
           -e AZURE_CLIENT_SECRET=$(SPclientSecret) \
