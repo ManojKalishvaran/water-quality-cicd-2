@@ -29,14 +29,14 @@ stages:
     displayName: 'Key Vault Login + Build Images'
     steps:
 
-    ## ✅ Step 1: Pull Secrets from Key Vault
-  - task: AzureKeyVault@2
-    name: FetchSecrets
-    inputs:
-      azureSubscription: 'az-sub'
-      keyVaultName: 'manoj-key-water'
-      SecretsFilter: '*'
-      RunAsPreJob: true
+      ## ✅ Step 1: Pull Secrets from Key Vault
+    - task: AzureKeyVault@2
+      name: FetchSecrets
+      inputs:
+        azureSubscription: 'az-sub'
+        keyVaultName: 'manoj-key-water'
+        SecretsFilter: '*'
+        RunAsPreJob: true
 
 
     ## ✅ Step 2: Checkout code
