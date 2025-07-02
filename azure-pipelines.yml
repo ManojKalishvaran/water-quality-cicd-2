@@ -35,7 +35,14 @@ stages:
         Dockerfile: '**/Training/Dockerfile'
         tags: |
           $(tag)
+    - script: |
+        echo "Pulling training img from ACR"
+        docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
 
+        echo "running training image..."
+        docker run manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
+      displayName: "Training..."
+      
   - job: BuildInferenceImage
     displayName: 'Inference Docker Image - Building'
     dependsOn: BuildTrainingImage
