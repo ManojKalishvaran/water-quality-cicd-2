@@ -19,6 +19,9 @@ variables:
   tag: 'latest'
 
 stages:
+# ==================================================================================
+# BUILD STAGE
+# ==================================================================================
 - stage: Build
   displayName: 'Build & Push Docker Images'
   jobs:
@@ -27,7 +30,9 @@ stages:
     displayName: 'Key Vault Login + Build Images'
     steps:
 
-    ## ✅ Step 1: Pull Secrets from Key Vault
+    # -------------------------------------------------
+    # Step 1: Pull secrets from Azure Key Vault
+    # -------------------------------------------------
     - task: AzureKeyVault@2
       name: FetchSecrets
       inputs:
@@ -36,36 +41,43 @@ stages:
         SecretsFilter: '*'
         RunAsPreJob: true
 
-    ## ✅ Step 2: Checkout code
+    # -------------------------------------------------
+    # Step 2: Checkout the source code
+    # -------------------------------------------------
     - checkout: self
 
-    ## ✅ Step 3: Build & Push Training Docker Image
+    # -------------------------------------------------
+    # Step 3: Build & Push Training Docker Image
+    # -------------------------------------------------
     - task: Docker@2
       displayName: 'Build & Push Training Image to ACR'
       inputs:
-        containerRegistry: 'acr-connection' 
+        containerRegistry: 'acr-connection'
         repository: '$(trainingImageName)'
         command: 'buildAndPush'
         Dockerfile: '**/Training/Dockerfile'
         tags: |
           $(tag)
 
-    ## ✅ Step 4: Run Training Container with Azure Auth
+    # -------------------------------------------------
+    # Step 4: Pull & Run Training Container (using ACR credentials)
+    # -------------------------------------------------
+    - task: Docker@2
+      displayName: 'Pull Training Image from ACR'
+      inputs:
+        containerRegistry: 'acr-connection'
+        command: 'pull'
+        imageName: '$(trainingImageName):$(tag)'
+
     - script: |
-        echo "Login to ACR..."
-        az acr login --name manojacrregistry
-        
-        echo "Pulling training image from ACR..."
-        docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
-
-        echo "Running training container with Azure credentials..."
+        echo "Running training container..."
         docker run \
-        #   -e AZURE_CLIENT_ID=$(SPclientID) \
-        #   -e AZURE_CLIENT_SECRET=$(SPclientSecret) \
-        #   -e AZURE_TENANT_ID=$(SPtenentID) \
           manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
-      displayName: "Run Training Container"
+      displayName: 'Run Training Container'
 
+  # -------------------------------------------------
+  # Step 5: Build Inference Docker Image
+  # -------------------------------------------------
   - job: BuildInferenceImage
     displayName: 'Build Inference Docker Image'
     dependsOn: LoginAndBuild
@@ -74,13 +86,16 @@ stages:
     - task: Docker@2
       displayName: 'Build & Push Inference Image to ACR'
       inputs:
-        containerRegistry: 'acr-connection'  
+        containerRegistry: 'acr-connection'
         repository: '$(inferenceImageName)'
         command: 'buildAndPush'
         Dockerfile: '**/inference/Dockerfile'
         tags: |
           $(tag)
 
+# ==================================================================================
+# DEPLOY STAGE
+# ==================================================================================
 - stage: Deploy
   displayName: 'Deploy Inference Container to Azure App Service'
   dependsOn: Build
@@ -92,6 +107,6 @@ stages:
     - task: AzureWebAppContainer@1
       displayName: 'Deploy Inference Container to App Service'
       inputs:
-        azureSubscription: 'az-sub'   
-        appName: 'water-quality-api'        
+        azureSubscription: 'az-sub'
+        appName: 'water-quality-api'
         containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'
