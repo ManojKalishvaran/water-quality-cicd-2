@@ -29,6 +29,7 @@ def load():
     # Step 2: Find the blob with the latest last modified time
     latest_blob = max(blobs, key=lambda b: b.last_modified)
 
+    model_info = f"Loading latest model: {latest_blob.name}, Last Modified: {latest_blob.last_modified}"
     print(f"Loading latest model: {latest_blob.name}, Last Modified: {latest_blob.last_modified}")
 
     # Step 3: Download the latest model blob
@@ -37,7 +38,7 @@ def load():
 
     # Step 4: Deserialize model
     model = pickle.loads(blob_data)
-    return model
+    return model, model_info
 
 def load_blob_client():
     feature = ["timestamp", "ph","Hardness","Solids","Chloramines","Sulfate","Conductivity","Organic_carbon","Trihalomethanes","Turbidity", "prediction"]

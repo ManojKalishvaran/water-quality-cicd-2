@@ -6,7 +6,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 print("loading model...")
-model = load()  
+model, model_info = load()  
 
 print("Loading logs...")
 log_client, features = load_blob_client()
@@ -15,6 +15,10 @@ print("finished loading model...")
 @app.route("/")
 def home():
     return {"status":"okay"}
+
+@app.route("/model_info")
+def returnmodel_info():
+    return {"model info":model_info}
 
 
 @app.route("/predict", methods=["POST"])
