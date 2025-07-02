@@ -41,7 +41,6 @@ stages:
 
     ## ✅ Step 2: Checkout code
     - checkout: self
-      dependsOn: FetchSecrets
 
     ## ✅ Step 3: Build & Push Training Docker Image
     - task: Docker@2
