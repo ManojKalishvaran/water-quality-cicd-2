@@ -57,9 +57,9 @@ stages:
 
         echo "Running training container with Azure credentials..."
         docker run \
-          -e AZURE_CLIENT_ID=$(SPclientID) \
-          -e AZURE_CLIENT_SECRET=$(SPclientSecret) \
-          -e AZURE_TENANT_ID=$(SPtenentID) \
+        #   -e AZURE_CLIENT_ID=$(SPclientID) \
+        #   -e AZURE_CLIENT_SECRET=$(SPclientSecret) \
+        #   -e AZURE_TENANT_ID=$(SPtenentID) \
           manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
       displayName: "Run Training Container"
 
