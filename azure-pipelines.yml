@@ -22,10 +22,24 @@ stages:
 - stage: Build
   displayName: 'Build & Push Docker Images'
   jobs:
-  - job: BuildTrainingImage
-    displayName: 'Training Docker Image - Building'
+
+  - job: LoginAndBuild
+    displayName: 'Key Vault Login + Build Images'
     steps:
+
+    ## ✅ Step 1: Pull Secrets from Key Vault
+    - task: AzureKeyVault@2
+      name: FetchSecrets
+      inputs:
+        azureSubscription: 'az-sub'
+        keyVaultName: 'manoj-key-water'
+        SecretsFilter: '*'
+        RunAsPreJob: true
+
+    ## ✅ Step 2: Checkout code
     - checkout: self
+
+    ## ✅ Step 3: Build & Push Training Docker Image
     - task: Docker@2
       displayName: 'Build & Push Training Image to ACR'
       inputs:
@@ -35,17 +49,23 @@ stages:
         Dockerfile: '**/Training/Dockerfile'
         tags: |
           $(tag)
+
+    ## ✅ Step 4: Run Training Container with Azure Auth
     - script: |
-        echo "Pulling training img from ACR"
+        echo "Pulling training image from ACR..."
         docker pull manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
 
-        echo "running training image..."
-        docker run manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
-      displayName: "Training..."
-      
+        echo "Running training container with Azure credentials..."
+        docker run \
+          -e AZURE_CLIENT_ID=$(SPclientID) \
+          -e AZURE_CLIENT_SECRET=$(SPclientSecret) \
+          -e AZURE_TENANT_ID=$(SPtenentID) \
+          manojacrregistry.azurecr.io/$(trainingImageName):$(tag)
+      displayName: "Run Training Container"
+
   - job: BuildInferenceImage
-    displayName: 'Inference Docker Image - Building'
-    dependsOn: BuildTrainingImage
+    displayName: 'Build Inference Docker Image'
+    dependsOn: LoginAndBuild
     steps:
     - checkout: self
     - task: Docker@2
@@ -71,4 +91,4 @@ stages:
       inputs:
         azureSubscription: 'az-sub'   
         appName: 'water-quality-api'        
-        containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'  
+        containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'
