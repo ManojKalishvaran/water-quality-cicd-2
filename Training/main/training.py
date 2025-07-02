@@ -11,19 +11,19 @@ from azure.storage.blob import BlobServiceClient
 
 
 def read_data():
-    # Replace with your Key Vault name and secret name
-    keyvault_name = "manoj-key-water"
-    secret_name = "train-data-sas"  # e.g., "storage-container-sas-token"
+    # # Replace with your Key Vault name and secret name
+    # keyvault_name = "manoj-key-water"
+    # secret_name = "train-data-sas"  # e.g., "storage-container-sas-token"
 
     # Construct Key Vault URI
-    KVUri = f"https://{keyvault_name}.vault.azure.net"
+    # KVUri = f"https://{keyvault_name}.vault.azure.net"
 
     # Authenticate to Key Vault using DefaultAzureCredential
     credential = DefaultAzureCredential()
-    secret_client = SecretClient(vault_url=KVUri, credential=credential)
+    # secret_client = SecretClient(vault_url=KVUri, credential=credential)
 
-    # Retrieve the SAS token from Key Vault
-    sas_token = secret_client.get_secret(secret_name).value
+    # # Retrieve the SAS token from Key Vault
+    # sas_token = secret_client.get_secret(secret_name).value
 
     # Construct the Blob service URL with SAS token
     storage_account_name = "manojblob1"
@@ -33,7 +33,7 @@ def read_data():
     account_url = f"https://{storage_account_name}.blob.core.windows.net"
 
     # Initialize BlobServiceClient with SAS token as credential
-    blob_service_client = BlobServiceClient(account_url=account_url, credential=sas_token)
+    blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
 
     # Get container and blob clients
     container_client = blob_service_client.get_container_client(container_name)
@@ -63,20 +63,20 @@ def train_model(x_train, x_test, y_train, y_test):
     pipe.fit(x_train, y_train)
     print("Training Complete")
 
-    keyvault_name = "manoj-key-water"
-    secret_name = "model-blob"
+    # keyvault_name = "manoj-key-water"
+    # secret_name = "model-blob"
 
-    KVUri = f"https://{keyvault_name}.vault.azure.net"
+    # KVUri = f"https://{keyvault_name}.vault.azure.net"
 
     credential = DefaultAzureCredential()
-    secret_client = SecretClient(vault_url=KVUri, credential=credential)
+    # secret_client = SecretClient(vault_url=KVUri, credential=credential)
 
-    sas_token = secret_client.get_secret(secret_name).value
+    # sas_token = secret_client.get_secret(secret_name).value
     storage_account = "manojblob1"
     container_name = "trained-models"
 
     account_url = f"https://{storage_account}.blob.core.windows.net"
-    blob_service_client = BlobServiceClient(account_url=account_url, credential=sas_token)
+    blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
 
     container_client = blob_service_client.get_container_client(container_name)
     try: 
