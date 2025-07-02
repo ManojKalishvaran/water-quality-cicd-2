@@ -1,0 +1,28 @@
+name: Retraining-water-quality-$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  fornow: 'nothin'
+  retrainingImageName: 'retrain-water-quality'
+  tag: 'latest'
+
+stages:
+  - stage: Build
+    displayName: "Retraining : Build & Push Docker - Images"
+    jobs:
+      - job: BuildRetrainingImage
+        displayName: "Retraining docker image - building"
+        steps:
+          - checkout: self
+          - task: Docker@2
+            displayName: "Build & Push retraining image to ACR"
+            inputs:
+              containerRegistry: 'acr-connection'
+              repository: "$(retrainingImageName)"
+              command: 'buildAndPush'
+              Dockerfile: '**/Retraining/Dockerfile'
+              tags: $(tag)
