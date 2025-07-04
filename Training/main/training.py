@@ -83,7 +83,7 @@ def train_model(x_train, x_test, y_train, y_test):
         container_client.create_container()
     except Exception as e: 
         print(f"Container already exists")
-    blob_name = "model-demo.pkl"
+    blob_name = "water_quality_classififer.pkl"
     blob_client = container_client.get_blob_client(blob_name)
 
     model_bytes = pickle.dumps(pipe)

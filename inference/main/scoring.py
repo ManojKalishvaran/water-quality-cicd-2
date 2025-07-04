@@ -18,7 +18,7 @@ def home():
 
 @app.route("/model_info")
 def returnmodel_info():
-    return {"model info":model_info}
+    return jsonify({"model info":model_info})
 
 
 @app.route("/predict", methods=["POST"])
@@ -60,4 +60,4 @@ def score():
     
 if __name__ == "__main__":
     # Run the Flask app on port 5001 (matching Dockerfile EXPOSE)
-    app.run(host="0.0.0.0", port= 80)
+    app.run(host="0.0.0.0", port= 80, debug= True)
