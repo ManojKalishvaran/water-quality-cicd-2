@@ -68,7 +68,7 @@ stages:
             Dockerfile: '**/inference/Dockerfile'
             tags: |
               $(tag)
-            buildContext: '$(Build.SourcesDirectory)'
+            buildContext: '$(Build.SourcesDirectory)/inference'
             buildArguments: |
               MODEL_CONTAINER=retrained-models
 

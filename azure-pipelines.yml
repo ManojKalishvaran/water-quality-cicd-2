@@ -52,7 +52,7 @@ stages:
         Dockerfile: '**/Training/Dockerfile'
         tags: |
           $(tag)
-        buildContext: '$(Build.SourcesDirectory)'
+        buildContext: '$(Build.SourcesDirectory)/Training'
         buildArguments: |
           MODEL_CONTAINER=trained-models
 
