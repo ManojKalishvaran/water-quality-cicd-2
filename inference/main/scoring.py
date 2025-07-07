@@ -4,25 +4,23 @@ from flask import Flask, request, jsonify
 from model_loader import load, load_blob_client
 from datetime import datetime 
 import argparse
+import os
+import logging
+
 
 app = Flask(__name__)
 
-def get_container():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model_container_name", type=str, help="container name of the model.")
-    args = parser.parse_args()
-    return args
 
-args = get_container()
+logging.info("loading model...")
+model_container_name = os.getenv("MODEL_CONTAINER", "trained-models")
+logging.info(f"Container Name GOT {model_container_name}")
+model, model_info = load(model_container_name)
 
-print("loading model...")
-model, model_info = load(args.model_container_name)  
-
-print("Loading logs...")
+logging.info("Loading logs...")
 log_client, features = load_blob_client()
 
 
-print("finished loading model...")
+logging.info("finished loading model...")
 @app.route("/")
 def home():
     return {"status":"okay"}

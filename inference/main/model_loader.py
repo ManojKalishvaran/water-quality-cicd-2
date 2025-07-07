@@ -33,6 +33,7 @@ def load(model_container):
     model_info = f"Loading latest model: {latest_blob.name}, Last Modified: {latest_blob.last_modified}"
     print(f"Loading latest model: {latest_blob.name}, Last Modified: {latest_blob.last_modified}")
 
+
     # Step 3: Download the latest model blob
     blob_client = container_client.get_blob_client(latest_blob.name)
     blob_data = blob_client.download_blob().readall()
