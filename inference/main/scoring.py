@@ -3,13 +3,24 @@ import pandas as pd
 from flask import Flask, request, jsonify
 from model_loader import load, load_blob_client
 from datetime import datetime 
+import argparse
 
 app = Flask(__name__)
+
+def get_container():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_container_name", type=str, help="container name of the model.")
+    args = parser.parse_args()
+    return args
+
+args = get_container()
+
 print("loading model...")
-model, model_info = load()  
+model, model_info = load(args.model_container_name)  
 
 print("Loading logs...")
 log_client, features = load_blob_client()
+
 
 print("finished loading model...")
 @app.route("/")
