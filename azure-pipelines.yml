@@ -29,7 +29,7 @@ stages:
     displayName: 'Key Vault Login + Build Images'
     steps:
 
-      ## ✅ Step 1: Pull Secrets from Key Vault
+    ## ✅ Step 1: Pull Secrets from Key Vault
     - task: AzureKeyVault@2
       name: FetchSecrets
       inputs:
@@ -52,6 +52,10 @@ stages:
         Dockerfile: '**/Training/Dockerfile'
         tags: |
           $(tag)
+        buildContext: '$(Build.SourcesDirectory)'
+        buildArguments: |
+          MODEL_CONTAINER=trained-models
+
 
     ## ✅ Step 4: Run Training Container with Azure Auth
     - script: |

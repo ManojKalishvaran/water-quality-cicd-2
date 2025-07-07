@@ -56,7 +56,7 @@ stages:
       # job 2
       - job: BuildInferenceImage
         displayName: 'Build & Push Inference Image to ACR'
-        dependsOn: LoginAndBuild
+        dependsOn: BuildAndRUNRetrainingImage
         steps:
         - checkout: self
         - task: Docker@2
@@ -74,7 +74,7 @@ stages:
 
   - stage: Deploy
     displayName: 'Deploy Retrained Inference Image to Azure App Service'
-    dependsOn: Build
+    dependsOn: BuildRetraining
     condition: succeeded()
     jobs:
     - job: DeployInference
