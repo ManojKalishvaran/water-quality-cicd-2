@@ -9,6 +9,7 @@ variables:
   retrainingImageName: 'retrain-water-quality'
   tag: 'latest'
   inferenceImageName: 'retrained-model-inference-image'
+  model_container: 'retrained-models'
 
 stages:
   - stage: BuildRetraining
@@ -69,7 +70,8 @@ stages:
             tags: |
               latest
             buildArguments: |
-              MODEL_CONTAINER=retrained-models
+              model_container=$(MODEL_CONTAINER)
+
 
 
   # - stage: Deploy

@@ -35,10 +35,10 @@ COPY . .
 RUN pip install -r requirements.txt
 
 # Accept build-time argument
-ARG MODEL_CONTAINER=trained-models
+ARG MODEL_CONTAINER
 
 # Set it as a runtime environment variable
-ENV MODEL_CONTAINER=${MODEL_CONTAINER}
+ENV MODEL_CONTAINER=$MODEL_CONTAINER
 
 RUN echo "✅ MODEL_CONTAINER at build: ${MODEL_CONTAINER}"
 
