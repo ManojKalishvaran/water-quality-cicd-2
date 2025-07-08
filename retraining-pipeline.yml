@@ -37,7 +37,7 @@ stages:
               containerRegistry: 'acr-connection'
               repository: "$(retrainingImageName)"
               command: 'buildAndPush'
-              Dockerfile: '**/Retraining/training/Dockerfile'
+              Dockerfile: '**/Retraining/training_retrain/Dockerfile'
               tags: $(tag)
 
           # 4
@@ -65,7 +65,7 @@ stages:
             containerRegistry: 'acr-connection'  
             repository: '$(inferenceImageName)'
             command: 'buildAndPush'
-            Dockerfile: '**/Retraining/inference/Dockerfile'
+            Dockerfile: '**/Retraining/inference_retrain/Dockerfile'
             tags: |
               $(tag)
             # buildContext: '$(Build.SourcesDirectory)/inference'
