@@ -61,15 +61,16 @@ stages:
         - task: Docker@2
           displayName: 'Build & Push Inference Image to ACR'
           inputs:
-            containerRegistry: 'acr-connection'  
-            repository: '$(inferenceImageName)'
+            containerRegistry: 'acr-connection'
+            repository: 'retrained-model-inference-image'
             command: 'buildAndPush'
             Dockerfile: '**/inference/Dockerfile'
-            tags: |
-              $(tag)
             buildContext: '$(Build.SourcesDirectory)/inference'
+            tags: |
+              latest
             buildArguments: |
               MODEL_CONTAINER=retrained-models
+
 
   # - stage: Deploy
   #   displayName: 'Deploy Retrained Inference Image to Azure App Service'
