@@ -43,7 +43,8 @@ def load():
         "Last Modified":latest_blob.last_modified, 
         "is current version":model_properties.get("is_current_version"), 
         "container": model_properties.get("container"),
-        "version id": model_properties.get("version_id")
+        "version id": model_properties.get("version_id"), 
+        "Pipeline":"CI-CD"
     }
     # Step 4: Deserialize model
     model = pickle.loads(blob_data)
