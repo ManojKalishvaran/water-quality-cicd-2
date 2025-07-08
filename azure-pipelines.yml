@@ -52,9 +52,9 @@ stages:
         Dockerfile: '**/Training/Dockerfile'
         tags: |
           $(tag)
-        buildContext: '$(Build.SourcesDirectory)/Training'
-        buildArguments: |
-          MODEL_CONTAINER=trained-models
+        # buildContext: '$(Build.SourcesDirectory)/Training'
+        # buildArguments: |
+        #   MODEL_CONTAINER=trained-models
 
 
     ## ✅ Step 4: Run Training Container with Azure Auth
