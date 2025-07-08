@@ -8,7 +8,7 @@ pool:
 variables:
   retrainingImageName: 'retrain-water-quality'
   tag: 'latest'
-  inferenceImageName: 'Retrained-model-inference-image'
+  inferenceImageName: 'retrained-model-inference-image'
 
 stages:
   - stage: BuildRetraining
