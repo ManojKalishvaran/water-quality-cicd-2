@@ -12,9 +12,8 @@ app = Flask(__name__)
 
 
 logging.info("loading model...")
-model_container_name = os.getenv("MODEL_CONTAINER", "trained-models")
-logging.info(f"Container Name GOT {model_container_name}")
-model, model_info = load(model_container_name)
+
+model, model_info = load()
 
 logging.info("Loading logs...")
 log_client, features = load_blob_client()

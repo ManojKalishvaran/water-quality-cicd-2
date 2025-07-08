@@ -7,7 +7,7 @@ import pandas as pd
 import io
 
 
-def load(model_container):
+def load():
     # keyvault_name = "manoj-key-water"
     # secret_name = "model-blob"
 
@@ -17,8 +17,7 @@ def load(model_container):
 
     # sas_token = secret_client.get_secret(secret_name).value
     storage_account = "manojblob1"
-    # container_name = "trained-models"
-    container_name = model_container
+    container_name = "trained-models"
 
     account_url = f"https://{storage_account}.blob.core.windows.net"
     blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)

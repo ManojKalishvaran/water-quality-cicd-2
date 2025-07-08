@@ -68,9 +68,9 @@ stages:
             Dockerfile: '**/inference/Dockerfile'
             tags: |
               $(tag)
-            buildContext: '$(Build.SourcesDirectory)/inference'
-            buildArguments: |
-              'retrained-models'=$(MODEL_CONTAINER)
+            # buildContext: '$(Build.SourcesDirectory)/inference'
+            # buildArguments: |
+            #   'retrained-models'=$(MODEL_CONTAINER)
 
   - stage: Deploy
     displayName: 'Deploy Retrained Inference Image to Azure App Service'
