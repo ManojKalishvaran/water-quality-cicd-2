@@ -1,0 +1,33 @@
+name: Retraining-water-quality-$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  retrainingImageName: 'retrain-water-quality'
+  tag: 'latest'
+  inferenceImageName: 'retrained-model-inference-image'
+  model_container: 'retrained-models'
+
+stages:
+  - stage: BuildRetraining
+    displayName: "Retraining : Build & Push & Run Docker - Image"
+    jobs:
+      - job: BuildInferenceImage
+        displayName: 'Build & Push Inference Image to ACR'
+        steps:
+          - checkout: self
+          - task: Docker@2
+            displayName: 'Build & Push Inference Image to ACR'
+            inputs:
+              containerRegistry: 'acr-connection'
+              repository: 'retrained-model-inference-image'
+              command: 'buildAndPush'
+              Dockerfile: '**/inference/Dockerfile'
+              buildContext: '$(Build.SourcesDirectory)/inference'
+              tags: |
+                latest
+              buildArguments: |
+                model_container=$(model_container)
