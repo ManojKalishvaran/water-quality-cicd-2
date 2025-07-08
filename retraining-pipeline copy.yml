@@ -86,6 +86,3 @@ stages:
           azureSubscription: 'az-sub'   
           appName: 'water-quality-api'        
           containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'
-
-
-
