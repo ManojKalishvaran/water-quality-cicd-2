@@ -14,49 +14,48 @@ stages:
   - stage: BuildRetraining
     displayName: "Retraining : Build & Push & Run Docker - Image"
     jobs:
-      # job 1
-      - job: BuildAndRUNRetrainingImage
-        displayName: "Retraining docker image - building"
-        steps:
-          # 1
-          - task: AzureKeyVault@2
-            name: FetchSecrets
-            inputs:
-              azureSubscription: 'az-sub'
-              keyVaultName: 'manoj-key-water'
-              SecretsFilter: "*"
-              RunAsPreJob: true
+      # # job 1
+      # - job: BuildAndRUNRetrainingImage
+      #   displayName: "Retraining docker image - building"
+      #   steps:
+      #     # 1
+      #     - task: AzureKeyVault@2
+      #       name: FetchSecrets
+      #       inputs:
+      #         azureSubscription: 'az-sub'
+      #         keyVaultName: 'manoj-key-water'
+      #         SecretsFilter: "*"
+      #         RunAsPreJob: true
 
-          # 2 
-          - checkout: self
+      #     # 2 
+      #     - checkout: self
 
-          # 3 
-          - task: Docker@2
-            displayName: "Build & Push retraining image to ACR"
-            inputs:
-              containerRegistry: 'acr-connection'
-              repository: "$(retrainingImageName)"
-              command: 'buildAndPush'
-              Dockerfile: '**/Retraining/Dockerfile'
-              tags: $(tag)
+      #     # 3 
+      #     - task: Docker@2
+      #       displayName: "Build & Push retraining image to ACR"
+      #       inputs:
+      #         containerRegistry: 'acr-connection'
+      #         repository: "$(retrainingImageName)"
+      #         command: 'buildAndPush'
+      #         Dockerfile: '**/Retraining/Dockerfile'
+      #         tags: $(tag)
 
-          # 4
-          - script:
-              echo "Pulling retraining image from ACR"
-              docker pull manojacrregistry.azurecr.io/$(retrainingImageName):$(tag)
+      #     # 4
+      #     - script:
+      #         echo "Pulling retraining image from ACR"
+      #         docker pull manojacrregistry.azurecr.io/$(retrainingImageName):$(tag)
 
-              echo "Running training container with Azure credentials...using $(SPclientID1)"
-              docker run \
-                -e AZURE_CLIENT_ID="$(SPclientID1)" \
-                -e AZURE_CLIENT_SECRET="$(SPclientSecret1)" \
-                -e AZURE_TENANT_ID="$(SPtenentID1)" \
-                manojacrregistry.azurecr.io/$(retrainingImageName):$(tag)
-            displayName: "Run ReTraining Container"
+      #         echo "Running training container with Azure credentials...using $(SPclientID1)"
+      #         docker run \
+      #           -e AZURE_CLIENT_ID="$(SPclientID1)" \
+      #           -e AZURE_CLIENT_SECRET="$(SPclientSecret1)" \
+      #           -e AZURE_TENANT_ID="$(SPtenentID1)" \
+      #           manojacrregistry.azurecr.io/$(retrainingImageName):$(tag)
+      #       displayName: "Run ReTraining Container"
 
       # job 2
       - job: BuildInferenceImage
         displayName: 'Build & Push Inference Image to ACR'
-        dependsOn: BuildAndRUNRetrainingImage
         steps:
         - checkout: self
         - task: Docker@2
@@ -72,17 +71,20 @@ stages:
             buildArguments: |
               MODEL_CONTAINER=retrained-models
 
-  - stage: Deploy
-    displayName: 'Deploy Retrained Inference Image to Azure App Service'
-    dependsOn: BuildRetraining
-    condition: succeeded()
-    jobs:
-    - job: DeployInference
-      displayName: 'Deploy Inference Container'
-      steps:
-      - task: AzureWebAppContainer@1
-        displayName: 'Deploy Inference Container to App Service'
-        inputs:
-          azureSubscription: 'az-sub'   
-          appName: 'water-quality-api'        
-          containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'
+  # - stage: Deploy
+  #   displayName: 'Deploy Retrained Inference Image to Azure App Service'
+  #   dependsOn: BuildRetraining
+  #   condition: succeeded()
+  #   jobs:
+  #   - job: DeployInference
+  #     displayName: 'Deploy Inference Container'
+  #     steps:
+  #     - task: AzureWebAppContainer@1
+  #       displayName: 'Deploy Inference Container to App Service'
+  #       inputs:
+  #         azureSubscription: 'az-sub'   
+  #         appName: 'water-quality-api'        
+  #         containers: 'manojacrregistry.azurecr.io/$(inferenceImageName):$(tag)'
+
+
+

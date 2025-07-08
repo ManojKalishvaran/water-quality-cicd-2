@@ -21,4 +21,6 @@ RUN pip install -r requirements.txt
 
 ENV MODEL_CONTAINER=trained-models 
 
+RUN echo "✅ MODEL_CONTAINER set to: $MODEL_CONTAINER"
+
 CMD python main/scoring.py
