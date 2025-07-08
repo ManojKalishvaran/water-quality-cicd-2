@@ -70,7 +70,7 @@ stages:
               $(tag)
             buildContext: '$(Build.SourcesDirectory)/inference'
             buildArguments: |
-              MODEL_CONTAINER=retrained-models
+              'retrained-models'=$(MODEL_CONTAINER)
 
   - stage: Deploy
     displayName: 'Deploy Retrained Inference Image to Azure App Service'
