@@ -30,4 +30,4 @@ stages:
               tags: |
                 latest
               buildArguments: |
-                model_container=$(model_container)
+                MODEL_CONTAINER=$(model_container)
